@@ -534,6 +534,7 @@ async function ensureAdminUsersTable() {
 
 // =========================================================================
 // KREDENSIAL ADMIN UTAMA (BISA DI-EDIT MANUAL DI CPANEL: backend_app/server.js)
+// Ubah 'admin' dan 'password' di bawah ini via cPanel File Manager ➔ Save ➔ Restart Backend
 // =========================================================================
 const CPANEL_ADMIN_USERNAME = 'admin';
 const CPANEL_ADMIN_PASSWORD = 'password';
@@ -543,22 +544,17 @@ app.post('/api/login', async (req, res) => {
   await ensureAdminUsersTable();
   const { username, password } = req.body;
 
-  // 1. Cek Kredensial Manual yang di-set di server.js (Bisa di-edit via cPanel File Manager)
+  // Jika kredensial di-set di server.js, ini MENGANULIR (OVERRIDE) semua kredensial lain!
   if (username === CPANEL_ADMIN_USERNAME && password === CPANEL_ADMIN_PASSWORD) {
+    // Sinkronkan ke database MySQL jika perlu
+    try {
+      await db.query('UPDATE admin_users SET username = ?, password = ? WHERE id = 1', [CPANEL_ADMIN_USERNAME, CPANEL_ADMIN_PASSWORD]);
+    } catch(e) {}
     return res.json({ success: true, token: 'token_' + Date.now(), username: CPANEL_ADMIN_USERNAME });
   }
 
-  // 2. Cek Kredensial dari Database MySQL
-  try {
-    const [rows] = await db.query('SELECT * FROM admin_users WHERE username = ? AND password = ?', [username, password]);
-    if (rows.length > 0) {
-      res.json({ success: true, token: 'token_' + Date.now(), username: rows[0].username });
-    } else {
-      res.status(401).json({ error: 'Username atau Password salah!' });
-    }
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  // Jika tidak cocok dengan CPANEL_ADMIN_PASSWORD
+  return res.status(401).json({ error: 'Username atau Password salah!' });
 });
 
 // Endpoint Ganti Password / Username Admin

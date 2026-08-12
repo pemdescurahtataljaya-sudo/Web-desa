@@ -23,18 +23,7 @@ const Login = () => {
         alert('Gagal login: Respons tidak valid');
       }
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.error) {
-        alert('Gagal login: ' + err.response.data.error);
-      } else {
-        // Fallback jika API luring
-        if (username === 'admin' && password === 'password') {
-          localStorage.setItem('adminToken', '12345');
-          localStorage.setItem('adminUsername', 'admin');
-          navigate('/dashboard');
-        } else {
-          alert('Username atau Password salah!');
-        }
-      }
+      alert('Gagal login: ' + (err.response?.data?.error || 'Server backend tidak dapat dihubungi. Sebaiknya periksa server.js Anda.'));
     } finally {
       setIsLoading(false);
     }
