@@ -1,0 +1,44 @@
+.typewriter-container {
+  display: inline-grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  max-width: 100%;
+}
+
+.typewriter-ghost {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none;
+  user-select: none;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.typewriter-visible {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  margin-left: 2px;
+  font-weight: 300;
+  color: var(--secondary-color, #10b981);
+  animation: typewriterBlink 0.75s infinite;
+}
+
+@keyframes typewriterBlink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}

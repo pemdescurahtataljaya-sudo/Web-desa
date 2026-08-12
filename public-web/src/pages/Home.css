@@ -1,0 +1,240 @@
+.home-page {
+  padding-top: 70px;
+}
+
+/* Hero Section with Slider Background */
+.hero {
+  position: relative;
+  height: 85vh;
+  min-height: 580px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  padding: 0 20px;
+  overflow: hidden;
+  background: #0f172a url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+}
+
+.hero-slider-bg-container {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1;
+  background: #0f172a;
+}
+
+.hero-slide-bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out, transform 8s ease;
+  transform: scale(1);
+}
+
+.hero-slide-bg.active {
+  opacity: 1;
+  transform: scale(1.04);
+}
+
+.hero-slider-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.45) 0%, rgba(15, 23, 42, 0.75) 100%);
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  max-width: 800px;
+}
+
+/* Slider Dots */
+.hero-slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.hero-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.hero-dot:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.hero-dot.active {
+  background: var(--secondary-color, #10b981);
+  width: 32px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  backdrop-filter: blur(5px);
+}
+
+.hero h1 {
+  font-size: 4rem;
+  color: white;
+  margin-bottom: 24px;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.hero p {
+  font-size: 1.25rem;
+  margin-bottom: 40px;
+  color: #E2E8F0;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+/* Sekilas */
+.sekilas {
+  padding: 80px 20px;
+}
+
+.sekilas-header {
+  margin-bottom: 60px;
+}
+
+.sekilas-header p {
+  color: var(--text-light);
+  font-size: 1.1rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+.feature-card {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  transition: var(--transition);
+  text-align: center;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.feature-icon {
+  width: 70px;
+  height: 70px;
+  background: var(--color-1, #f0fdf4);
+  color: var(--secondary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+}
+
+.feature-card h3 {
+  margin-bottom: 16px;
+}
+
+.feature-card p {
+  color: var(--text-light);
+}
+
+/* Map Section */
+.bg-light {
+  background-color: #F1F5F9;
+}
+
+/* CTA */
+.cta-section {
+  padding: 80px 20px;
+}
+
+.cta-card {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: var(--text-on-primary, white);
+  padding: 60px 40px;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.cta-card h2 {
+  color: var(--text-on-primary, white);
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+}
+
+.cta-card p {
+  font-size: 1.2rem;
+  margin-bottom: 32px;
+  color: var(--text-on-primary, white);
+  opacity: 0.9;
+}
+
+.cta-card .btn {
+  background: var(--text-on-primary, white);
+  color: var(--primary-color);
+}
+
+.cta-card .btn:hover {
+  background: var(--bg-color);
+  transform: translateY(-2px);
+}
+
+/* Responsiveness */
+@media (max-width: 1024px) {
+  .hero h1 { font-size: 3rem; }
+  .cta-card h2 { font-size: 2rem; }
+}
+
+@media (max-width: 768px) {
+  .hero h1 { font-size: 2.2rem; }
+  .hero p { font-size: 1rem; }
+  .hero-actions { 
+    flex-direction: column; 
+    width: 100%; 
+    max-width: 250px; 
+    margin: 0 auto; 
+  }
+  .hero-actions .btn { width: 100%; }
+  
+  .sekilas { padding: 40px 20px; }
+  .sekilas-header { margin-bottom: 40px; }
+  
+  .cta-section { padding: 40px 20px; }
+  .cta-card { padding: 40px 20px; }
+  .cta-card h2 { font-size: 1.75rem; }
+  .cta-card p { font-size: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 1.8rem; }
+  .hero { min-height: 500px; height: 100vh; }
+}

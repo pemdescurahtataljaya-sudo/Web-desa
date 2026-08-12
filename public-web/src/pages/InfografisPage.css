@@ -1,0 +1,245 @@
+.infografis-page {
+  width: 100%;
+}
+
+.hero-section {
+  background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+  color: var(--text-on-primary, white);
+  margin-bottom: 20px;
+  padding: 105px 20px 30px 20px;
+}
+
+.hero-section .title {
+  color: var(--text-on-primary, white);
+}
+
+.tabs-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--text-on-primary, white);
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+}
+
+.tab-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.tab-btn.active {
+  background: var(--text-on-primary, white);
+  color: var(--primary-color);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.content-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Demografi Section */
+.demografi-section {
+  padding: 40px 0;
+}
+
+.demografi-header {
+  max-width: 800px;
+  margin: 0 auto 40px;
+}
+
+.demografi-header h2 {
+  font-size: 2.2rem;
+  color: #0f172a;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.demografi-header p {
+  font-size: 1.1rem;
+  color: #0f172a;
+  line-height: 1.6;
+}
+
+.demografi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.demo-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.02);
+}
+
+.demo-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.demo-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-on-primary, white);
+  flex-shrink: 0;
+}
+
+.users-icon, .kk-icon, .male-icon, .female-icon { 
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color)); 
+}
+
+.demo-info h3 {
+  font-size: 0.9rem;
+  color: #0f172a;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.demo-info p {
+  font-size: 1.2rem;
+  color: #0f172a;
+  font-weight: 500;
+  margin: 0;
+}
+
+.highlight-number {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.pekerjaan-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 20px;
+}
+
+.pekerjaan-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  align-content: start;
+}
+
+@media (max-width: 768px) {
+  .pekerjaan-grid {
+    grid-template-columns: 1fr;
+  }
+  .pekerjaan-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tabs-container {
+    gap: 10px;
+  }
+  
+  .tab-btn {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    flex: 1 1 calc(50% - 10px);
+  }
+
+  .demografi-header h2 {
+    font-size: 1.8rem;
+  }
+
+  .demo-card {
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .demo-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .highlight-number {
+    font-size: 1.8rem;
+  }
+
+  .chart-container, .bar-container {
+    padding: 15px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .content-container {
+    padding: 0 12px;
+  }
+
+  .apbdes-section, .realisasi-section {
+    padding: 10px 0 !important;
+  }
+
+  /* Table responsiveness */
+  table th, table td {
+    padding: 8px 6px !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Title size adjustments */
+  .apbdes-section h2, .realisasi-section h2 {
+    font-size: 1.3rem !important;
+  }
+
+  .apbdes-section h3, .realisasi-section h3 {
+    font-size: 1rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    padding: 115px 14px 24px 14px !important;
+  }
+
+  .tabs-container {
+    gap: 8px;
+  }
+
+  .tab-btn {
+    padding: 8px 10px;
+    font-size: 0.82rem;
+    min-width: 90px;
+  }
+
+  /* Outer card container padding */
+  .apbdes-section > div, .realisasi-section > div {
+    padding: 16px 10px !important;
+  }
+
+  table th, table td {
+    padding: 6px 4px !important;
+    font-size: 0.78rem !important;
+  }
+}

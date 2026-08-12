@@ -1,0 +1,567 @@
+.profil-page {
+  padding-top: 70px;
+  padding-bottom: 80px;
+}
+
+.profil-header {
+  background: var(--primary-color);
+  color: var(--text-on-primary, white);
+  padding: 80px 20px;
+  text-align: center;
+  margin-bottom: -60px;
+}
+
+.profil-header h1 {
+  color: var(--text-on-primary, white);
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.profil-header p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.profil-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.profil-section {
+  background: var(--white);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(0,0,0,0.05);
+}
+
+.section-title h2 {
+  color: var(--text-main) !important;
+}
+
+.text-primary {
+  color: var(--primary-color);
+}
+
+.visi-misi-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 40px;
+}
+
+.visi h3, .misi h3 {
+  color: var(--text-main) !important;
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+}
+
+.visi p {
+  font-size: 1.2rem;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--text-main) !important;
+  line-height: 1.8;
+}
+
+.misi ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: var(--text-main) !important;
+}
+
+.profil-section p {
+  margin-bottom: 16px;
+  color: var(--text-main) !important;
+  line-height: 1.8;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.info-card {
+  background: var(--white);
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  border-top: 4px solid var(--secondary-color);
+}
+
+.card-icon {
+  width: 50px;
+  height: 50px;
+  background: var(--color-1, #f0fdf4);
+  color: var(--secondary-color);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.info-card h3 {
+  margin-bottom: 16px;
+  color: var(--text-main) !important;
+}
+
+.info-card p {
+  color: var(--text-main) !important;
+  margin-bottom: 20px;
+}
+
+.stats, .dusun-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stats li, .dusun-list li {
+  background: var(--bg-color);
+  padding: 12px 16px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.dusun-list li {
+  justify-content: flex-start;
+  font-weight: 500;
+  color: var(--text-main) !important;
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+  opacity: 0;
+}
+
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.4s; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .visi-misi-grid, .info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .profil-header h1 {
+    font-size: 2.2rem;
+  }
+  
+  .profil-header p {
+    font-size: 1rem;
+  }
+  
+  .profil-section {
+    padding: 24px;
+  }
+  
+  .info-card {
+    padding: 24px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profil-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .profil-section {
+    padding: 16px;
+  }
+}
+
+/* ORGANIZATIONAL TREE CHART STYLES (GAMBAR 1 DESIGN) */
+.org-chart-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 30px 15px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-sizing: border-box;
+}
+
+/* Zoom Toolbar Styles */
+.org-zoom-bar {
+  display: flex;
+  justify: space-between;
+  align-items: center;
+  background: #f8fafc;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.org-zoom-hint {
+  font-size: 0.82rem;
+  color: #475569;
+  font-weight: bold;
+}
+
+.org-zoom-buttons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.zoom-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #1e293b;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.zoom-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.zoom-badge {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #10b981;
+  min-width: 44px;
+  text-align: center;
+  background: #ecfdf5;
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid #a7f3d0;
+  white-space: nowrap;
+}
+
+.reset-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: #475569;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .org-zoom-bar {
+    padding: 8px 10px;
+    justify-content: center;
+  }
+  
+  .org-zoom-hint {
+    width: 100%;
+    text-align: center;
+    font-size: 0.76rem;
+  }
+
+  .org-zoom-buttons {
+    justify-content: center;
+    width: 100%;
+    gap: 4px;
+  }
+
+  .zoom-btn {
+    padding: 5px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .reset-btn {
+    padding: 5px 6px;
+    font-size: 0.75rem;
+  }
+}
+
+.org-tree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 960px;
+  max-width: 1150px;
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* Kades, Sekdes, Kasi, Kaur, Kadus Green Cards */
+.org-card-green {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff !important;
+  padding: 12px 18px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.28);
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.org-card-green:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4);
+}
+
+/* Staf Accent Cards */
+.org-card-staf {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+  color: #ffffff !important;
+  padding: 8px 12px;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(4, 120, 87, 0.3);
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* BPD & LPM Yellow Cards */
+.org-card-yellow {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #ffffff !important;
+  padding: 14px 22px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+  text-align: center;
+  min-width: 150px;
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.org-card-name {
+  font-weight: 800;
+  font-size: 0.92rem;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  color: #ffffff !important;
+}
+
+.org-card-title {
+  font-size: 0.78rem;
+  opacity: 0.95;
+  font-weight: 600;
+  color: #ffffff !important;
+}
+
+/* CLEAR BOLD CONNECTING LINES (HIGH CONTRAST) */
+.org-line-v {
+  width: 3px;
+  background: #64748b;
+  margin: 0 auto;
+}
+
+.org-line-h-bar {
+  height: 3px;
+  background: #64748b;
+  margin: 0 auto;
+}
+
+/* APARAT PEMERINTAH DESA RESPONSIVE GRID (EXACTLY 3 PER ROW ON MOBILE & TABLET) */
+.aparat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.aparat-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.aparat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+.aparat-foto-container {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f1f5f9;
+  margin-bottom: 14px;
+  border: 1px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aparat-nama {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+}
+
+.aparat-jabatan {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.aparat-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: auto;
+}
+
+.aparat-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-decoration: none;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.aparat-btn:hover {
+  transform: scale(1.08);
+}
+
+.wa-btn {
+  background: #25d366;
+}
+
+.email-btn {
+  background: #2563eb;
+}
+
+.disabled-btn {
+  background: #cbd5e1;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* MEDIA QUERIES FOR TABLET & MOBILE PHONES (3 CARDS PER ROW ALWAYS) */
+@media (max-width: 992px) {
+  .aparat-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
+  }
+  
+  .aparat-card {
+    padding: 12px 8px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .aparat-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .aparat-card {
+    padding: 8px 5px !important;
+    border-radius: 10px !important;
+  }
+
+  .aparat-foto-container {
+    border-radius: 8px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .aparat-nama {
+    font-size: 0.72rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 2px !important;
+  }
+
+  .aparat-jabatan {
+    font-size: 0.65rem !important;
+    line-height: 1.15 !important;
+    margin-bottom: 8px !important;
+  }
+
+  .aparat-actions {
+    gap: 5px !important;
+  }
+
+  .aparat-btn {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .aparat-btn svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .aparat-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 5px !important;
+  }
+
+  .aparat-card {
+    padding: 6px 4px !important;
+  }
+
+  .aparat-nama {
+    font-size: 0.65rem !important;
+  }
+
+  .aparat-jabatan {
+    font-size: 0.58rem !important;
+  }
+
+  .aparat-btn {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .aparat-btn svg {
+    width: 12px !important;
+    height: 12px !important;
+  }
+}
