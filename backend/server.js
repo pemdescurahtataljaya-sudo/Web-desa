@@ -511,7 +511,60 @@ app.put('/api/settings', async (req, res) => {
   }
 });
 
-// Helper ensure apbdes table exists
+// Helper ensure admin_users table exists
+async function ensureAdminUsersTable() {
+  try {
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS admin_users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(100) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      )
+    `);
+    const [rows] = await db.query('SELECT COUNT(*) as count FROM admin_users');
+    if (rows[0].count === 0) {
+      await db.query('INSERT INTO admin_users (username, password) VALUES (?, ?)', ['admin', 'password']);
+    }
+  } catch (err) {
+    console.error('Error creating admin_users table:', err);
+  }
+}
+
+// Endpoint Login Admin
+app.post('/api/login', async (req, res) => {
+  await ensureAdminUsersTable();
+  const { username, password } = req.body;
+  try {
+    const [rows] = await db.query('SELECT * FROM admin_users WHERE username = ? AND password = ?', [username, password]);
+    if (rows.length > 0) {
+      res.json({ success: true, token: 'token_' + Date.now(), username: rows[0].username });
+    } else {
+      res.status(401).json({ error: 'Username atau Password salah!' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Endpoint Ganti Password / Username Admin
+app.post('/api/change-password', async (req, res) => {
+  await ensureAdminUsersTable();
+  const { currentPassword, newUsername, newPassword } = req.body;
+  try {
+    const [rows] = await db.query('SELECT * FROM admin_users WHERE password = ? ORDER BY id ASC LIMIT 1', [currentPassword]);
+    if (rows.length === 0) {
+      return res.status(400).json({ error: 'Password lama Anda salah!' });
+    }
+    const targetUser = newUsername && newUsername.trim() ? newUsername.trim() : rows[0].username;
+    await db.query('UPDATE admin_users SET username = ?, password = ? WHERE id = ?', [targetUser, newPassword, rows[0].id]);
+    res.json({ message: 'Username dan Password admin berhasil diperbarui!' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 async function ensureApbdesTable() {
   try {
     await db.query(`
