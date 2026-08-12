@@ -225,4 +225,4 @@ Dikembangkan untuk kepentingan pelayanan publik dan transparansi pemerintahan de
 
 - **Website**: [curahtatal.com](https://curahtatal.com)
 - **Admin**: [admin.curahtatal.com](https://admin.curahtatal.com)
-- **Email**: pemdes@curahtatal.desa.id
+- **Email pembuat**: alisamudra164@gmail.com / imamsuryo48@gmail.com
