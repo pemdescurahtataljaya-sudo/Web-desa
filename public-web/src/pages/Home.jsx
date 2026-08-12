@@ -76,7 +76,7 @@ const Home = () => {
           <div style={{ fontSize: '1.2rem', fontWeight: '800', color: '#ffffff', margin: '4px 0 14px 0', textShadow: '0 2px 8px rgba(0,0,0,0.5)', opacity: 0.95 }}>
             Kecamatan Arjasa, Kabupaten Situbondo
           </div>
-          <p>Pesona alam pegunungan, potensi pertanian melimpah, dan keramahan warga di Kecamatan Arjasa, Situbondo.</p>
+          <p>Pesona alam pegunungan, potensi pertanian melimpah, dan keramahan warga di Desa Curah Tatal, Kecamatan Arjasa, Situbondo.</p>
           <div className="hero-actions">
             <Link to="/profil" className="btn btn-primary">Kenali Kami Lebih Dekat</Link>
             <Link to="/map" className="btn btn-outline" style={{borderColor: 'white', color: 'white'}}>Jelajahi Peta</Link>
