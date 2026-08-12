@@ -532,10 +532,23 @@ async function ensureAdminUsersTable() {
   }
 }
 
+// =========================================================================
+// KREDENSIAL ADMIN UTAMA (BISA DI-EDIT MANUAL DI CPANEL: backend_app/server.js)
+// =========================================================================
+const CPANEL_ADMIN_USERNAME = 'admin';
+const CPANEL_ADMIN_PASSWORD = 'password';
+
 // Endpoint Login Admin
 app.post('/api/login', async (req, res) => {
   await ensureAdminUsersTable();
   const { username, password } = req.body;
+
+  // 1. Cek Kredensial Manual yang di-set di server.js (Bisa di-edit via cPanel File Manager)
+  if (username === CPANEL_ADMIN_USERNAME && password === CPANEL_ADMIN_PASSWORD) {
+    return res.json({ success: true, token: 'token_' + Date.now(), username: CPANEL_ADMIN_USERNAME });
+  }
+
+  // 2. Cek Kredensial dari Database MySQL
   try {
     const [rows] = await db.query('SELECT * FROM admin_users WHERE username = ? AND password = ?', [username, password]);
     if (rows.length > 0) {
