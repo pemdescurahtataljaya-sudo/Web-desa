@@ -88,11 +88,6 @@ const Dashboard = () => {
   const [editingId, setEditingId] = useState(null);
   const [isPostSubmitting, setIsPostSubmitting] = useState(false);
 
-  // Ganti Password Admin State
-  const [isPassModalOpen, setIsPassModalOpen] = useState(false);
-  const [passForm, setPassForm] = useState({ currentPassword: '', newUsername: '', newPassword: '', confirmPassword: '' });
-  const [isPassSubmitting, setIsPassSubmitting] = useState(false);
-
   // Data Penduduk State
   const defaultUmurData = {
     laki_laki: [
@@ -271,9 +266,22 @@ const Dashboard = () => {
 
 
   useEffect(() => {
-    if (!localStorage.getItem('adminToken')) {
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
       navigate('/login');
+      return;
     }
+    // Verifikasi Sesi Admin ke Backend (Otomatis kick jika password di-edit di cPanel)
+    axios.get(`${API_URL}/verify-session`, { headers: { Authorization: `Bearer ${token}` } })
+      .catch((err) => {
+        if (err.response && err.response.status === 401) {
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('adminUsername');
+          alert('Sesi Anda telah berakhir karena password admin telah diubah. Silakan login kembali.');
+          navigate('/login');
+        }
+      });
+
     if (activeTab === 'penduduk') {
       fetchPenduduk();
     } else if (activeTab === 'apbdes') {
@@ -397,41 +405,6 @@ const Dashboard = () => {
     } catch (err) {
       console.error('Save settings error:', err);
       alert('Gagal menyimpan pengaturan: ' + (err.response?.data?.error || err.message));
-    }
-  };
-
-  const handleSavePassword = async (e) => {
-    e.preventDefault();
-    if (!passForm.currentPassword) {
-      alert('Password saat ini wajib diisi!');
-      return;
-    }
-    if (passForm.newPassword !== passForm.confirmPassword) {
-      alert('Konfirmasi password baru tidak cocok!');
-      return;
-    }
-    if (passForm.newPassword.length < 4) {
-      alert('Password baru minimal 4 karakter!');
-      return;
-    }
-
-    setIsPassSubmitting(true);
-    try {
-      const res = await axios.post(`${API_URL}/change-password`, {
-        currentPassword: passForm.currentPassword,
-        newUsername: passForm.newUsername,
-        newPassword: passForm.newPassword
-      });
-      alert(res.data?.message || 'Username & Password admin berhasil diperbarui!');
-      setIsPassModalOpen(false);
-      setPassForm({ currentPassword: '', newUsername: '', newPassword: '', confirmPassword: '' });
-      if (passForm.newUsername) {
-        localStorage.setItem('adminUsername', passForm.newUsername);
-      }
-    } catch (err) {
-      alert('Gagal mengganti password: ' + (err.response?.data?.error || err.message));
-    } finally {
-      setIsPassSubmitting(false);
     }
   };
 
@@ -2988,15 +2961,6 @@ const Dashboard = () => {
             </li>
           ))}
         </ul>
-        <div style={{ padding: '0 15px', marginBottom: '15px' }}>
-          <button 
-            onClick={() => setIsPassModalOpen(true)} 
-            className="btn btn-secondary" 
-            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '10px', fontSize: '0.85rem', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold' }}
-          >
-            <KeyRound size={16} /> Ganti Password
-          </button>
-        </div>
         <button onClick={handleLogout} className="btn-logout">
           <LogOut size={18} /> Keluar
         </button>
@@ -3005,20 +2969,11 @@ const Dashboard = () => {
       <main className="content-area">
         <header className="content-header">
           <h1>Kelola Data: {tabs.find(t => t.id === activeTab)?.label}</h1>
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <button 
-              onClick={() => setIsPassModalOpen(true)} 
-              className="btn btn-secondary"
-              style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 14px', background: '#f59e0b', color: 'white', border: 'none', fontWeight: 'bold', fontSize: '0.88rem', borderRadius: '6px' }}
-            >
-              <KeyRound size={16} /> Ganti Password
+          {activeTab !== 'penduduk' && activeTab !== 'apbdes' && activeTab !== 'realisasi' && activeTab !== 'tema' && activeTab !== 'profil' && activeTab !== 'peta' && activeTab !== 'backup' && (
+            <button onClick={openAddModal} className="btn-add">
+              <Plus size={18} /> Tambah Baru
             </button>
-            {activeTab !== 'penduduk' && activeTab !== 'apbdes' && activeTab !== 'realisasi' && activeTab !== 'tema' && activeTab !== 'profil' && activeTab !== 'peta' && activeTab !== 'backup' && (
-              <button onClick={openAddModal} className="btn-add">
-                <Plus size={18} /> Tambah Baru
-              </button>
-            )}
-          </div>
+          )}
         </header>
 
         {renderTabContent()}
@@ -3128,80 +3083,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* MODAL GANTI PASSWORD ADMIN */}
-        {isPassModalOpen && (
-          <div className="modal-overlay">
-            <div className="modal-box" style={{ maxWidth: '450px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid #e2e8f0', paddingBottom: '12px' }}>
-                <h2 style={{ margin: 0, fontSize: '1.2rem', color: '#0f172a', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <KeyRound size={20} style={{ color: '#f59e0b' }} /> Ganti Username &amp; Password Admin
-                </h2>
-                <button type="button" onClick={() => setIsPassModalOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}>
-                  <X size={20} />
-                </button>
-              </div>
-              <form onSubmit={handleSavePassword} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                <div className="form-group">
-                  <label style={{ fontWeight: 'bold', color: '#0f172a', display: 'block', marginBottom: '4px' }}>Password Saat Ini *</label>
-                  <input
-                    type="password"
-                    required
-                    placeholder="Masukkan password admin saat ini"
-                    value={passForm.currentPassword}
-                    onChange={e => setPassForm({ ...passForm, currentPassword: e.target.value })}
-                    className="form-control"
-                    style={{ padding: '9px 12px' }}
-                  />
-                </div>
 
-                <div className="form-group">
-                  <label style={{ fontWeight: 'bold', color: '#0f172a', display: 'block', marginBottom: '4px' }}>Username Baru (Opsional)</label>
-                  <input
-                    type="text"
-                    placeholder="Kosongkan jika tidak ingin mengubah username"
-                    value={passForm.newUsername}
-                    onChange={e => setPassForm({ ...passForm, newUsername: e.target.value })}
-                    className="form-control"
-                    style={{ padding: '9px 12px' }}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label style={{ fontWeight: 'bold', color: '#0f172a', display: 'block', marginBottom: '4px' }}>Password Baru *</label>
-                  <input
-                    type="password"
-                    required
-                    placeholder="Masukkan password baru (min 4 karakter)"
-                    value={passForm.newPassword}
-                    onChange={e => setPassForm({ ...passForm, newPassword: e.target.value })}
-                    className="form-control"
-                    style={{ padding: '9px 12px' }}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label style={{ fontWeight: 'bold', color: '#0f172a', display: 'block', marginBottom: '4px' }}>Konfirmasi Password Baru *</label>
-                  <input
-                    type="password"
-                    required
-                    placeholder="Ulangi password baru Anda"
-                    value={passForm.confirmPassword}
-                    onChange={e => setPassForm({ ...passForm, confirmPassword: e.target.value })}
-                    className="form-control"
-                    style={{ padding: '9px 12px' }}
-                  />
-                </div>
-
-                <div className="modal-actions" style={{ marginTop: '10px' }}>
-                  <button type="button" disabled={isPassSubmitting} onClick={() => setIsPassModalOpen(false)} className="btn-cancel">Batal</button>
-                  <button type="submit" disabled={isPassSubmitting} className="btn-save" style={{ background: '#f59e0b', color: 'white', fontWeight: 'bold' }}>
-                    {isPassSubmitting ? 'Memproses...' : 'Simpan Password Baru'}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
 
 
         {/* LAYAR PENUH CROPPER 3x4 FOTO APARAT */}

@@ -532,12 +532,28 @@ async function ensureAdminUsersTable() {
   }
 }
 
+const crypto = require('crypto');
+
 // =========================================================================
 // KREDENSIAL ADMIN UTAMA (BISA DI-EDIT MANUAL DI CPANEL: backend_app/server.js)
 // Ubah 'admin' dan 'password' di bawah ini via cPanel File Manager ➔ Save ➔ Restart Backend
 // =========================================================================
 const CPANEL_ADMIN_USERNAME = 'admin';
 const CPANEL_ADMIN_PASSWORD = 'password';
+
+// Helper Token Sesi yang terikat pada CPANEL_ADMIN_PASSWORD
+function getPasswordHash() {
+  return crypto.createHash('md5').update(CPANEL_ADMIN_PASSWORD || 'password').digest('hex').substring(0, 10);
+}
+
+function generateSessionToken() {
+  return `session_${getPasswordHash()}_${Date.now()}`;
+}
+
+function isValidSessionToken(token) {
+  if (!token || typeof token !== 'string') return false;
+  return token.includes(`session_${getPasswordHash()}_`);
+}
 
 // Endpoint Login Admin
 app.post('/api/login', async (req, res) => {
@@ -546,15 +562,26 @@ app.post('/api/login', async (req, res) => {
 
   // Jika kredensial di-set di server.js, ini MENGANULIR (OVERRIDE) semua kredensial lain!
   if (username === CPANEL_ADMIN_USERNAME && password === CPANEL_ADMIN_PASSWORD) {
-    // Sinkronkan ke database MySQL jika perlu
     try {
       await db.query('UPDATE admin_users SET username = ?, password = ? WHERE id = 1', [CPANEL_ADMIN_USERNAME, CPANEL_ADMIN_PASSWORD]);
     } catch(e) {}
-    return res.json({ success: true, token: 'token_' + Date.now(), username: CPANEL_ADMIN_USERNAME });
+    const token = generateSessionToken();
+    return res.json({ success: true, token, username: CPANEL_ADMIN_USERNAME });
   }
 
   // Jika tidak cocok dengan CPANEL_ADMIN_PASSWORD
   return res.status(401).json({ error: 'Username atau Password salah!' });
+});
+
+// Endpoint Verifikasi Sesi Admin
+app.get('/api/verify-session', (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader ? authHeader.replace(/^Bearer\s+/i, '') : req.query.token;
+  if (isValidSessionToken(token)) {
+    res.json({ valid: true });
+  } else {
+    res.status(401).json({ valid: false, error: 'Sesi Anda telah berakhir karena password admin telah diubah. Silakan login kembali.' });
+  }
 });
 
 // Endpoint Ganti Password / Username Admin
