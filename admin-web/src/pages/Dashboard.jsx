@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cropper from 'react-easy-crop';
-import { LogOut, Plus, Trash2, Edit, Image as ImageIcon, Crop, X, Palette, BookOpen, Save, Menu, MapPin, ExternalLink, Navigation, Eye, Database, KeyRound, Lock } from 'lucide-react';
+import { LogOut, Plus, Trash2, Edit, Image as ImageIcon, Crop, X, Palette, BookOpen, Save, Menu, MapPin, ExternalLink, Navigation, Eye, Database, KeyRound, Lock, FileText } from 'lucide-react';
 import { getCroppedImg, createImage } from '../utils/cropImage';
 import { API_URL, getUploadUrl } from '../utils/url';
 import PetaTab from './PetaTab';
@@ -135,6 +135,11 @@ const Dashboard = () => {
   const [dokumentasi, setDokumentasi] = useState([]); // File baru yang akan diupload
   const [existingDokumentasi, setExistingDokumentasi] = useState([]); // URL foto lama
   const [deletedDokumentasi, setDeletedDokumentasi] = useState([]); // URL foto lama yang dihapus
+
+  // State Lampiran Dokumen (PDF, Excel, Word, PPT, ZIP, dll)
+  const [dokumenFiles, setDokumentasiDokumen] = useState([]); // Berkas dokumen baru
+  const [existingDokumenLampiran, setExistingDokumenLampiran] = useState([]); // Lampiran dokumen lama
+  const [deletedDokumenLampiran, setDeletedDokumenLampiran] = useState([]); // Lampiran dokumen lama yang dihapus
 
   // Web Settings State
   const [themeColor, setThemeColor] = useState('#10b981');
@@ -942,6 +947,9 @@ const Dashboard = () => {
     setDokumentasi([]);
     setExistingDokumentasi([]);
     setDeletedDokumentasi([]);
+    setDokumentasiDokumen([]);
+    setExistingDokumenLampiran([]);
+    setDeletedDokumenLampiran([]);
     setIsModalOpen(true);
   };
 
@@ -953,12 +961,16 @@ const Dashboard = () => {
     setDokumentasi([]); 
     setExistingDokumentasi([]);
     setDeletedDokumentasi([]);
+    setDokumentasiDokumen([]);
+    setExistingDokumenLampiran([]);
+    setDeletedDokumenLampiran([]);
     setIsModalOpen(true);
 
     try {
       const res = await axios.get(`${API_URL}/posts/${post.id}`);
-      if (res.data && res.data.dokumentasi) {
-        setExistingDokumentasi(res.data.dokumentasi);
+      if (res.data) {
+        if (res.data.dokumentasi) setExistingDokumentasi(res.data.dokumentasi);
+        if (res.data.dokumen_lampiran) setExistingDokumenLampiran(res.data.dokumen_lampiran);
       }
     } catch (err) {
       console.error('Gagal mengambil data dokumentasi lama', err);
@@ -968,6 +980,11 @@ const Dashboard = () => {
   const handleDeleteExistingDoc = (url) => {
     setExistingDokumentasi(prev => prev.filter(item => item !== url));
     setDeletedDokumentasi(prev => [...prev, url]);
+  };
+
+  const handleDeleteExistingLampiran = (url) => {
+    setExistingDokumenLampiran(prev => prev.filter(item => item.url !== url));
+    setDeletedDokumenLampiran(prev => [...prev, url]);
   };
 
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
@@ -1014,16 +1031,25 @@ const Dashboard = () => {
     data.append('deskripsi', formData.deskripsi);
     if (thumbnail) data.append('thumbnail', thumbnail);
     
+    // Lampirkan file dokumentasi foto tanpa batas
+    if (dokumentasi && dokumentasi.length > 0) {
+      Array.from(dokumentasi).forEach(file => data.append('dokumentasi', file));
+    }
+    
+    // Lampirkan berkas dokumen (Excel, Word, PDF, PPT, ZIP, dll)
+    if (dokumenFiles && dokumenFiles.length > 0) {
+      Array.from(dokumenFiles).forEach(file => data.append('dokumenFiles', file));
+    }
+
     setIsPostSubmitting(true);
     try {
       if (editingId) {
-        Array.from(dokumentasi).forEach(file => data.append('dokumentasi', file));
         data.append('deletedDokumentasi', JSON.stringify(deletedDokumentasi));
+        data.append('deletedDokumenLampiran', JSON.stringify(deletedDokumenLampiran));
         await axios.put(`${API_URL}/posts/${editingId}`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
         alert('Berhasil diperbarui!');
       } else {
         data.append('kategori', activeTab);
-        Array.from(dokumentasi).forEach(file => data.append('dokumentasi', file));
         await axios.post(`${API_URL}/posts`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
         alert('Berhasil ditambahkan!');
       }
@@ -3006,7 +3032,7 @@ const Dashboard = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>Dokumentasi Tambahan (Maks 10 Foto Baru)</label>
+                  <label>Dokumentasi Tambahan (Foto Bebas - Tanpa Batas)</label>
                   <input type="file" accept="image/*" multiple onChange={e => setDokumentasi(e.target.files)} />
                   {dokumentasi && dokumentasi.length > 0 && (
                     <div style={{display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '10px'}}>
@@ -3041,6 +3067,56 @@ const Dashboard = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Seksi Upload Dokumen Lampiran (Excel, Word, PDF, PPT, ZIP, dll) */}
+                <div className="form-group" style={{ marginTop: '16px', background: '#f8fafc', padding: '14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <label style={{ fontWeight: 'bold', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <FileText size={18} style={{ color: '#2563eb' }} /> Upload Dokumen Lampiran (Excel, Word, PDF, PPT, ZIP, dll)
+                  </label>
+                  <input 
+                    type="file" 
+                    multiple 
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.csv,.txt" 
+                    onChange={e => setDokumentasiDokumen(e.target.files)} 
+                    style={{ marginTop: '6px' }}
+                  />
+                  
+                  {dokumenFiles && dokumenFiles.length > 0 && (
+                    <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <span style={{ fontSize: '0.85rem', color: '#475569', fontWeight: 'bold' }}>Berkas baru yang akan di-upload:</span>
+                      {Array.from(dokumenFiles).map((file, idx) => (
+                        <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 10px', background: '#ffffff', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}>
+                          <FileText size={16} style={{ color: '#2563eb' }} />
+                          <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{file.name}</span>
+                          <span style={{ color: '#64748b', fontSize: '0.75rem' }}>({(file.size / 1024).toFixed(1)} KB)</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {editingId && existingDokumenLampiran.length > 0 && (
+                    <div style={{ marginTop: '12px' }}>
+                      <span style={{ fontSize: '0.85rem', color: '#475569', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>Dokumen Lampiran Tersimpan (Klik ❌ untuk menghapus):</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        {existingDokumenLampiran.map((doc, idx) => (
+                          <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', background: '#ffffff', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
+                              <FileText size={16} style={{ color: '#2563eb' }} />
+                              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{doc.name || doc.url}</span>
+                            </div>
+                            <button 
+                              type="button" 
+                              onClick={() => handleDeleteExistingLampiran(doc.url)}
+                              style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', padding: '2px 6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem' }}
+                            >
+                              <X size={14} /> Hapus
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
                 
                 <div className="modal-actions">
                   <button type="button" disabled={isPostSubmitting} onClick={() => setIsModalOpen(false)} className="btn-cancel">Batal</button>

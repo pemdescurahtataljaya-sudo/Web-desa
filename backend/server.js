@@ -37,10 +37,18 @@ const docStorage = multer.diskStorage({
 });
 const uploadDoc = multer({ storage: docStorage });
 
+// Helper ensure posts table has dokumen_lampiran column
+async function ensurePostsTable() {
+  try {
+    await db.query('ALTER TABLE posts ADD COLUMN dokumen_lampiran LONGTEXT');
+  } catch (e) {}
+}
+
 // Rute untuk mendapatkan semua post berdasarkan kategori
 app.get('/api/posts', async (req, res) => {
   const { kategori } = req.query;
   try {
+    await ensurePostsTable();
     let query = 'SELECT * FROM posts';
     let params = [];
     if (kategori) {
@@ -50,46 +58,62 @@ app.get('/api/posts', async (req, res) => {
     query += ' ORDER BY created_at DESC';
     
     const [rows] = await db.query(query, params);
-    res.json(rows);
+    const parsedRows = rows.map(r => {
+      let docs = [];
+      try {
+        if (typeof r.dokumen_lampiran === 'string') docs = JSON.parse(r.dokumen_lampiran);
+        else if (Array.isArray(r.dokumen_lampiran)) docs = r.dokumen_lampiran;
+      } catch(e) { docs = []; }
+      return { ...r, dokumen_lampiran: docs };
+    });
+    res.json(parsedRows);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Rute mendapatkan detail post beserta dokumentasi
+// Rute mendapatkan detail post beserta dokumentasi & lampiran
 app.get('/api/posts/:id', async (req, res) => {
   try {
+    await ensurePostsTable();
     const [post] = await db.query('SELECT * FROM posts WHERE id = ?', [req.params.id]);
     if (post.length === 0) return res.status(404).json({ message: 'Post tidak ditemukan' });
     
     const [dokumentasi] = await db.query('SELECT image_url FROM post_dokumentasi WHERE post_id = ?', [req.params.id]);
     
+    let dokumen_lampiran = [];
+    try {
+      if (typeof post[0].dokumen_lampiran === 'string') {
+        dokumen_lampiran = JSON.parse(post[0].dokumen_lampiran);
+      } else if (Array.isArray(post[0].dokumen_lampiran)) {
+        dokumen_lampiran = post[0].dokumen_lampiran;
+      }
+    } catch(e) {
+      dokumen_lampiran = [];
+    }
+
     res.json({
       ...post[0],
-      dokumentasi: dokumentasi.map(d => d.image_url)
+      dokumentasi: dokumentasi.map(d => d.image_url),
+      dokumen_lampiran
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Fungsi memproses gambar (Diset ultra-cepat & teroptimasi)
-async function processImage(file) {
-  const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}.webp`;
+// Fungsi memproses berkas dokumen (PDF, Excel, Word, PPT, ZIP, dll)
+function processDocumentFile(file) {
+  const ext = path.extname(file.originalname) || '';
+  const cleanOriginalName = file.originalname || `Dokumen_${Date.now()}${ext}`;
+  const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
   const filepath = path.join(uploadDir, filename);
-  try {
-    await sharp(file.buffer)
-      .resize({ width: 1200, height: 1200, fit: 'inside', withoutEnlargement: true })
-      .webp({ quality: 75, effort: 2 })
-      .toFile(filepath);
-  } catch (e) {
-    fs.writeFileSync(filepath, file.buffer);
-  }
-  return filename;
+  fs.writeFileSync(filepath, file.buffer);
+  return { name: cleanOriginalName, url: filename };
 }
 
-// Rute membuat post baru
-app.post('/api/posts', upload.fields([{ name: 'thumbnail', maxCount: 1 }, { name: 'dokumentasi', maxCount: 10 }]), async (req, res) => {
+// Rute membuat post baru (Foto dokumentasi tanpa batas + Lampiran Dokumen)
+app.post('/api/posts', upload.fields([{ name: 'thumbnail', maxCount: 1 }, { name: 'dokumentasi', maxCount: 500 }, { name: 'dokumenFiles', maxCount: 100 }]), async (req, res) => {
   const { kategori, judul, deskripsi } = req.body;
   
   if (!kategori || !judul) {
@@ -98,22 +122,29 @@ app.post('/api/posts', upload.fields([{ name: 'thumbnail', maxCount: 1 }, { name
 
   let connection;
   try {
+    await ensurePostsTable();
     connection = await db.getConnection();
     await connection.beginTransaction();
 
     let thumbnailUrl = null;
-    if (req.files['thumbnail']) {
+    if (req.files && req.files['thumbnail']) {
       thumbnailUrl = await processImage(req.files['thumbnail'][0]);
     }
 
+    // Olah lampiran dokumen (Excel, Word, PDF, dll)
+    let lampiranList = [];
+    if (req.files && req.files['dokumenFiles'] && req.files['dokumenFiles'].length > 0) {
+      lampiranList = req.files['dokumenFiles'].map(file => processDocumentFile(file));
+    }
+
     const [result] = await connection.query(
-      'INSERT INTO posts (kategori, judul, deskripsi, thumbnail) VALUES (?, ?, ?, ?)',
-      [kategori, judul, deskripsi, thumbnailUrl]
+      'INSERT INTO posts (kategori, judul, deskripsi, thumbnail, dokumen_lampiran) VALUES (?, ?, ?, ?, ?)',
+      [kategori, judul, deskripsi, thumbnailUrl, JSON.stringify(lampiranList)]
     );
 
     const postId = result.insertId;
 
-    if (req.files['dokumentasi'] && req.files['dokumentasi'].length > 0) {
+    if (req.files && req.files['dokumentasi'] && req.files['dokumentasi'].length > 0) {
       const docUrls = await Promise.all(
         req.files['dokumentasi'].map(file => processImage(file))
       );
@@ -135,7 +166,7 @@ app.post('/api/posts', upload.fields([{ name: 'thumbnail', maxCount: 1 }, { name
   }
 });
 
-app.put('/api/posts/:id', upload.fields([{ name: 'thumbnail', maxCount: 1 }, { name: 'dokumentasi', maxCount: 10 }]), async (req, res) => {
+app.put('/api/posts/:id', upload.fields([{ name: 'thumbnail', maxCount: 1 }, { name: 'dokumentasi', maxCount: 500 }, { name: 'dokumenFiles', maxCount: 100 }]), async (req, res) => {
   const { judul, deskripsi } = req.body;
   const postId = req.params.id;
   
@@ -144,6 +175,7 @@ app.put('/api/posts/:id', upload.fields([{ name: 'thumbnail', maxCount: 1 }, { n
   }
 
   try {
+    await ensurePostsTable();
     let query = 'UPDATE posts SET judul = ?, deskripsi = ?';
     let params = [judul, deskripsi];
 
@@ -153,12 +185,38 @@ app.put('/api/posts/:id', upload.fields([{ name: 'thumbnail', maxCount: 1 }, { n
       params.push(thumbnailUrl);
     }
 
-    query += ' WHERE id = ?';
-    params.push(postId);
+    // Ambil data lampiran lama
+    const [existingRows] = await db.query('SELECT dokumen_lampiran FROM posts WHERE id = ?', [postId]);
+    let currentLampiran = [];
+    if (existingRows.length > 0 && existingRows[0].dokumen_lampiran) {
+      try {
+        if (typeof existingRows[0].dokumen_lampiran === 'string') currentLampiran = JSON.parse(existingRows[0].dokumen_lampiran);
+        else if (Array.isArray(existingRows[0].dokumen_lampiran)) currentLampiran = existingRows[0].dokumen_lampiran;
+      } catch(e) { currentLampiran = []; }
+    }
+
+    // Hapus lampiran lama yang ditandai Hapus
+    if (req.body.deletedDokumenLampiran) {
+      try {
+        const deletedLamps = JSON.parse(req.body.deletedDokumenLampiran);
+        if (Array.isArray(deletedLamps) && deletedLamps.length > 0) {
+          currentLampiran = currentLampiran.filter(l => !deletedLamps.includes(l.url));
+        }
+      } catch(e) {}
+    }
+
+    // Tambahkan berkas dokumen lampiran baru jika ada
+    if (req.files && req.files['dokumenFiles'] && req.files['dokumenFiles'].length > 0) {
+      const newLamps = req.files['dokumenFiles'].map(file => processDocumentFile(file));
+      currentLampiran = [...currentLampiran, ...newLamps];
+    }
+
+    query += ', dokumen_lampiran = ? WHERE id = ?';
+    params.push(JSON.stringify(currentLampiran), postId);
 
     await db.query(query, params);
 
-    // Jika ada upload dokumentasi tambahan saat Edit, tambahkan ke tabel secara paralel
+    // Jika ada upload foto dokumentasi tambahan saat Edit, tambahkan ke tabel secara paralel
     if (req.files && req.files['dokumentasi'] && req.files['dokumentasi'].length > 0) {
       const docUrls = await Promise.all(
         req.files['dokumentasi'].map(file => processImage(file))
