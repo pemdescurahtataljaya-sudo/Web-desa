@@ -102,6 +102,45 @@ app.get('/api/posts/:id', async (req, res) => {
   }
 });
 
+// Helper memproses dan mengompresi gambar ke format WebP
+async function processImage(file) {
+  if (!file) return null;
+  const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}.webp`;
+  const filepath = path.join(uploadDir, filename);
+
+  try {
+    if (file.buffer) {
+      await sharp(file.buffer)
+        .resize({ width: 1200, fit: 'inside', withoutEnlargement: true })
+        .webp({ quality: 75 })
+        .toFile(filepath);
+    } else if (file.path && fs.existsSync(file.path)) {
+      await sharp(file.path)
+        .resize({ width: 1200, fit: 'inside', withoutEnlargement: true })
+        .webp({ quality: 75 })
+        .toFile(filepath);
+    } else if (file.filename) {
+      return file.filename;
+    } else {
+      return null;
+    }
+    return filename;
+  } catch (err) {
+    console.error('Sharp error in processImage, using fallback save:', err);
+    const ext = path.extname(file.originalname || '') || '.jpg';
+    const fallbackFilename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+    const fallbackPath = path.join(uploadDir, fallbackFilename);
+    if (file.buffer) {
+      fs.writeFileSync(fallbackPath, file.buffer);
+    } else if (file.path && fs.existsSync(file.path)) {
+      fs.copyFileSync(file.path, fallbackPath);
+    } else {
+      return file.filename || fallbackFilename;
+    }
+    return fallbackFilename;
+  }
+}
+
 // Fungsi memproses berkas dokumen (PDF, Excel, Word, PPT, ZIP, dll)
 function processDocumentFile(file) {
   const ext = path.extname(file.originalname) || '';
