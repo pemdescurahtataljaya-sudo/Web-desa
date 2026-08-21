@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Berita Acara & Dokumentasi Spesifikasi System - Desa Curah Tatal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      --secondary: #10b981;
+      --accent: #f59e0b;
+      --dark: #0f172a;
+      --dark-card: #1e293b;
+      --light-bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --radius: 12px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--light-bg);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    h1, h2, h3, h4, .brand {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    /* TOP BAR & NAV */
+    .top-header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: white;
+      padding: 30px 20px;
+      border-bottom: 4px solid var(--primary);
+    }
+
+    .header-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    @media (min-width: 768px) {
+      .header-container {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    .header-title h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+    }
+
+    .header-title p {
+      font-size: 0.95rem;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      width: fit-content;
+    }
+
+    .badge-status .dot {
+      width: 8px;
+      height: 8px;
+      background-color: #34d399;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #34d399;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .action-bar {
+      max-width: 1100px;
+      margin: 20px auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .btn-outline {
+      background-color: white;
+      color: var(--dark);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-outline:hover {
+      background-color: #f1f5f9;
+    }
+
+    /* MAIN CONTENT AREA */
+    .main-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* SEARCH BAR */
+    .search-box {
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 14px 20px;
+      font-size: 1rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow);
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+    }
+
+    /* CARD STYLING */
+    .card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow);
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      color: var(--dark);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 10px;
+    }
+
+    .card-title .icon-bg {
+      background-color: var(--primary-light);
+      color: var(--primary);
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    /* GRID & TABLES */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    @media (min-width: 768px) {
+      .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .info-grid.three-col {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .info-box {
+      background-color: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 15px;
+    }
+
+    .info-box label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .info-box val {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--dark);
+      word-break: break-word;
+    }
+
+    .custom-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 0.92rem;
+    }
+
+    .custom-table th, .custom-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .custom-table th {
+      background-color: #f1f5f9;
+      color: var(--dark);
+      font-weight: 700;
+    }
+
+    .custom-table tr:hover {
+      background-color: #f8fafc;
+    }
+
+    /* FEATURE LIST */
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      padding: 12px 16px;
+      border-radius: 8px;
+    }
+
+    .feature-item .check {
+      background: #dcfce7;
+      color: #16a34a;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-weight: bold;
+      font-size: 0.85rem;
+    }
+
+    .feature-item .text strong {
+      color: var(--dark);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .feature-item .text p {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    /* ALERT BOX */
+    .alert-box {
+      border-left: 4px solid var(--accent);
+      background-color: #fffbeb;
+      padding: 15px 20px;
+      border-radius: 4px;
+      margin-top: 15px;
+    }
+
+    .alert-box.danger {
+      border-left-color: #ef4444;
+      background-color: #fef2f2;
+    }
+
+    .alert-box h4 {
+      color: #92400e;
+      margin-bottom: 5px;
+      font-size: 1rem;
+    }
+
+    .alert-box.danger h4 {
+      color: #991b1b;
+    }
+
+    .alert-box p {
+      font-size: 0.88rem;
+      color: #78350f;
+    }
+
+    .alert-box.danger p {
+      color: #7f1d1d;
+    }
+
+    /* SIGNATURE BLOCK FOR PRINT/BERITA ACARA */
+    .signature-section {
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 2px dashed var(--border-color);
+    }
+
+    .sig-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    @media (min-width: 600px) {
+      .sig-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .sig-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 180px;
+    }
+
+    .sig-line {
+      width: 200px;
+      border-bottom: 1.5px solid var(--dark);
+      margin-bottom: 4px;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* PRINT STYLES */
+    @media print {
+      .action-bar, .search-box, top-header {
+        display: none !important;
+      }
+      body {
+        background-color: white;
+        color: black;
+        padding: 0;
+      }
+      .card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER UTAMA -->
+  <header class="top-header">
+    <div class="header-container">
+      <div class="header-title">
+        <div class="badge-status">
+          <span class="dot"></span> STATUS: 100% SELESAI & SELESAI SERAH TERIMA
+        </div>
+        <h1 style="margin-top: 10px;">BERITA ACARA & DOKUMENTASI SISTEM</h1>
+        <p>Sistem Informasi & Profil Digital Desa Curah Tatal, Kec. Arjasa, Kab. Situbondo</p>
+      </div>
+      <div>
+        <button onclick="window.print()" class="btn btn-primary">
+          🖨️ Cetak / Simpan PDF
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ACTION BAR -->
+  <div class="action-bar">
+    <a href="https://curahtatal.com" target="_blank" class="btn btn-outline">🌐 Buka Website Utama (curahtatal.com)</a>
+    <a href="https://admin.curahtatal.com" target="_blank" class="btn btn-outline">🔐 Buka Panel Admin (admin.curahtatal.com)</a>
+    <a href="https://github.com/pemdescurahtataljaya-sudo/Web-desa.git" target="_blank" class="btn btn-outline">💻 Repositori GitHub</a>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <main class="main-container">
+
+    <!-- SEARCH FILTER -->
+    <div class="search-box">
+      <input type="text" id="searchInput" class="search-input" placeholder="🔍 Cari modul, fitur, atau informasi spesifikasi..." onkeyup="filterContent()">
+    </div>
+
+    <!-- CARD 1: IDENTITAS PROYEK -->
+    <section class="card searchable-card">
+      <h2 class="card-title">
+        <span class="icon-bg">📌</span> I. Identitas Proyek & Hak Cipta
+      </h2>
+      <div class="info-grid">
+        <div class="info-box">
+          <label>Nama Sistem Platform</label>
+          <val>Web Portal & Digitalisasi Desa Curah Tatal</val>
+        </div>
+        <div class="info-box">
+          <label>Wilayah Administrasi</label>
+          <val>Desa Curah Tatal, Kec. Arjasa, Kab. Situbondo</val>
+        </div>
+        <div class="info-box">
+          <label>Domain Publik (Warga)</label>
+          <val><a href="https://curahtatal.com" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: bold;">https://curahtatal.com</a></val>
+        </div>
+        <div class="info-box">
+          <label>Domain Admin (Perangkat Desa)</label>
+          <val><a href="https://admin.curahtatal.com" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: bold;">https://admin.curahtatal.com</a></val>
+        </div>
+        <div class="info-box">
+          <label>Domain Backend API & Server</label>
+          <val><a href="https://data.curahtatal.com" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: bold;">https://data.curahtatal.com</a></val>
+        </div>
+        <div class="info-box">
+          <label>Tim Pengembang (Developers)</label>
+          <val>alisamudra164@gmail.com / imamsuryo48@gmail.com</val>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARD 2: KONTEN LENGKAP WEBSITE PUBLIK -->
+    <section class="card searchable-card">
+      <h2 class="card-title">
+        <span class="icon-bg">🌐</span> II. Rincian Modul & Fitur Website Publik (curahtatal.com)
+      </h2>
+
+      <ul class="feature-list">
+        <li class="feature-item">
+          <span class="check">✓</span>
+          <div class="text">
+            <strong>1. Halaman Beranda (Landing Page)</strong>
+            <p>Dilengkapi Hero Slider foto 16:9 dengan overlay kontras tinggi, teks animasi ketik (Typewriter) jargon #CurahTatalJAYA, kartu statistik penduduk ringkas, sambutan Kepala Desa, berita terkini, dan peta destinasi ringkas.</p>
+          </div>
+        </li>
+        <li class="feature-item">
+          <span class="check">✓</span>
+          <div class="text">
+            <strong>2. Halaman Profil Desa Lengkap (/profil)</strong>
+            <p>Memuat Visi & 8 Misi Desa, Sejarah Asal-Usul sejak 1821 (era Kembeng Pote), Batas Wilayah Administrasi (Luas 42,56 km² / 15.663 Ha, Ketinggian 20,5 mdpl), Rincian 10 Dusun & Kasun, Kartu Aparat Pemerintah Desa (Foto 3x4, Jabatan, & Direct Link WhatsApp wa.me), serta Data Sarpras Lengkap.</p>
+          </div>
+        </li>
+        <li class="feature-item">
+          <span class="check">✓</span>
+          <div class="text">
+            <strong>3. Halaman Infografis Penduduk (/infografis)</strong>
+            <p>Visualisasi grafik interaktif (Chart.js) Piramida Umur Laki-Laki vs Perempuan, Diagram Lingkaran Pekerjaan Warga (3.739 Petani, 1.024 Buruh Tani, dll), serta Grafik Tingkat Pendidikan & Keagamaan.</p>
+          </div>
+        </li>
+        <li class="feature-item">
+          <span class="check">✓</span>
+          <div class="text">
+            <strong>4. Halaman Data Desa & Transparansi APBDes (/data)</strong>
+            <p>Tabel Transparansi Anggaran Pendapatan, Belanja, dan Pembiayaan Desa per Tahun; Laporan Realisasi Anggaran beserta Galeri Bukti Foto Dokumentasi Realisasi; serta RKP Desa.</p>
+          </div>
+        </li>
+        <li class="feature-item">
+          <span class="check">✓</span>
+          <div class="text">
+            <strong>5. Halaman Peta & Destinasi Desa (/map)</strong>
+            <p>Peta interaktif titik lokasi penting desa (Kantor Desa, Sekolah, Wisata, Fasilitas Umum) yang terintegrasi dengan Google Street View 360° dan Navigasi Rute Google Maps.</p>
+          </div>
+        </li>
+        <li class="feature-item">
+          <span class="check">✓</span>
+          <div class="text">
+            <strong>6. Detail Berita & Kegiatan Desa + Lampiran Dokumen (/kegiatan/:id)</strong>
+            <p>Halaman baca warta desa dengan Galeri Foto Dokumentasi Bebas/Tanpa Batas + Lightbox Modal, serta Seksi Unduh Dokumen Lampiran (Excel .xlsx, Word .docx, PDF, PPT, ZIP) lengkap dengan ikon tipe berkas.</p>
+          </div>
+        </li>
+        <li class="feature-item">
+          <span class="check">✓</span>
+          <div class="text">
+            <strong>7. Header & Footer Dinamis</strong>
+            <p>Navigasi responsif untuk HP/Laptop, serta Footer yang terintegrasi langsung dengan nomor WhatsApp Desa (klik langsung buka WA), alamat kantor, dan email resmi.</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- CARD 3: PANEL ADMIN -->
+    <section class="card searchable-card">
+      <h2 class="card-title">
+        <span class="icon-bg">🔐</span> III. Rincian Fitur & Pengelolaan Panel Admin (admin.curahtatal.com)
+      </h2>
+
+      <ul class="feature-list">
+        <li class="feature-item">
+          <span class="check">✓</span>
+          <div class="text">
+            <strong>Keamanan Sesi Terikat Kriptografis (MD5 Hash) & Auto Kick-Out</strong>
+            <p>Jika password di-edit manual di cPanel (server.js), seluruh akun admin yang sedang login di mana pun akan otomatis ter-logout / tertendang keluar seketika demi keamanan.</p>
+          </div>
+        </li>
+        <li class="feature-item">
+          <span class="check">✓</span>
+          <div class="text">
+            <strong>Kelola Berita & Kegiatan (Foto Unlimited & Lampiran Berkas)</strong>
+            <p>Fitur pemotong foto Thumbnail 16:9 bawaan, Upload Foto Dokumentasi Tambahan tanpa batasan jumlah, serta Upload Berkas Dokumen Lampiran (Excel, Word, PDF, PPT, ZIP).</p>
+          </div>
+        </li>
+        <li class="feature-item">
+          <span class="check">✓</span>
+          <div class="text">
+            <strong>Kelola Profil & Kartu Aparat (Cropper Khusus 3x4)</strong>
+            <p>Fitur pemotong & penyesuai posisi foto 3x4 khusus aparat desa agar tampilan kartu perangkat desa rapi dan presisi.</p>
+          </div>
+        </li>
+        <li class="feature-item">
+          <span class="check">✓</span>
+          <div class="text">
+            <strong>Kelola APBDes, Realisasi, Penduduk, & Peta Lokasi</strong>
+            <p>Fitur CRUD lengkap untuk memperbarui data anggaran desa, bukti realisasi, statistik kependudukan, serta titik lokasi peta interaktif.</p>
+          </div>
+        </li>
+        <li class="feature-item">
+          <span class="check">✓</span>
+          <div class="text">
+            <strong>Backup & Restore Database JSON</strong>
+            <p>Fitur ekspor dan impor seluruh data situs web dalam berkas JSON untuk cadangan keselamatan data.</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- CARD 4: TEKNOLOGI & SPESIFIKASI TEKNIS -->
+    <section class="card searchable-card">
+      <h2 class="card-title">
+        <span class="icon-bg">⚙️</span> IV. Spesifikasi Teknis & Infrastructure Stack
+      </h2>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Komponen</th>
+            <th>Teknologi Yang Digunakan</th>
+            <th>Fungsi / Peran</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Frontend Public</strong></td>
+            <td>React 19 + Vite</td>
+            <td>Menampilkan portal publik desa yang super cepat & responsif</td>
+          </tr>
+          <tr>
+            <td><strong>Frontend Admin</strong></td>
+            <td>React 19 + Lucide Icons + React Easy Crop</td>
+            <td>Panel pengelolaan data bagi Perangkat Desa</td>
+          </tr>
+          <tr>
+            <td><strong>Backend Server API</strong></td>
+            <td>Node.js (v20+) + Express.js</td>
+            <td>Engine pengolah request, autentikasi, & transmisi data API</td>
+          </tr>
+          <tr>
+            <td><strong>Pengolah Media</strong></td>
+            <td>Sharp (Image Processing)</td>
+            <td>Konversi foto ke WebP & kompresi otomatis max 1200px</td>
+          </tr>
+          <tr>
+            <td><strong>Database Engine</strong></td>
+            <td>MySQL (driver mysql2/promise)</td>
+            <td>Penyimpanan data dengan skema Auto-Repair Schema Retry</td>
+          </tr>
+          <tr>
+            <td><strong>Git Repository</strong></td>
+            <td>GitHub Version Control</td>
+            <td>github.com/pemdescurahtataljaya-sudo/Web-desa.git</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- CARD 5: CATATAN KEAMANAN HOSTING & UU PDP -->
+    <section class="card searchable-card">
+      <h2 class="card-title">
+        <span class="icon-bg">⚠️</span> V. Catatan Keamanan Hosting & UU Perlindungan Data Pribadi
+      </h2>
+
+      <div class="alert-box">
+        <h4>⚡ Status Hosting Saat Ini (Shared Hosting cPanel)</h4>
+        <p>Sistem saat ini ditempatkan pada Shared Hosting cPanel. Untuk mengelola informasi publik desa (berita, profil, APBDes, infografis umum, peta), Shared Hosting ini <strong>SANGAT MEMADAI & AMAN</strong>.</p>
+      </div>
+
+      <div class="alert-box danger">
+        <h4>🚨 PERINGATAN WAJIB JIKA DI KEMUDIAN HARI MENAMBAHKAN DATA KEPENDUDUKAN SENSIF</h4>
+        <p>Apabila di masa mendatang akan ditambahkan fitur pengolahan <strong>Data Kependudukan Sensitif (seperti NIK, Kartu Keluarga/KK, Data Bansos, DTKS, KTP)</strong>, maka <strong>WAJIB HUKUMNYA DILAKUKAN:</strong></p>
+        <br>
+        <p>1. <strong>Migrasi Metode Hosting</strong>: Pindah dari Shared Hosting ke <strong>VPS (Virtual Private Server) / Cloud Server</strong> (DigitalOcean, AWS, GCP, Biznet, dll) untuk isolasi keamanan penuh.</p>
+        <p>2. <strong>Peningkatan Keamanan</strong>: Terapkan enkripsi database AES-256, hashing bcrypt salt ≥12, Rate Limiting, WAF (Cloudflare Pro), Audit Log, dan Kepatuhan <strong>UU PDP No. 27 Tahun 2022</strong>.</p>
+      </div>
+    </section>
+
+    <!-- CARD 6: BLOK TANDA TANGAN BERITA ACARA -->
+    <section class="card signature-section searchable-card">
+      <h2 class="card-title" style="border: none;">
+        <span class="icon-bg">✍️</span> VI. Pengesahan Berita Acara Serah Terima
+      </h2>
+
+      <p style="font-size: 0.95rem; color: var(--text-muted); text-align: center;">
+        Demikian Berita Acara dan Spesifikasi Teknis ini dibuat dengan sebenarnya untuk dipergunakan sebagaimana mestinya dalam rangka serah terima dan pemanfaatan Sistem Informasi Digital Desa Curah Tatal.
+      </p>
+
+      <div class="sig-grid">
+        <div class="sig-box">
+          <p><strong>PIHAK PERTAMA</strong><br><small style="color: var(--text-muted);">Tim Pengembang (Developers)</small></p>
+          <div>
+            <div class="sig-line"></div>
+            <p><strong>Ali Samudra / Imam Suryo</strong></p>
+          </div>
+        </div>
+
+        <div class="sig-box">
+          <p><strong>PIHAK KEDUA</strong><br><small style="color: var(--text-muted);">Pemerintah Desa Curah Tatal</small></p>
+          <div>
+            <div class="sig-line"></div>
+            <p><strong>SUSWANTO, S.Sos.</strong><br><small>Kepala Desa Curah Tatal</small></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>Hak Cipta © 2024-2026 Pemerintah Desa Curah Tatal, Kecamatan Arjasa, Kabupaten Situbondo.</p>
+    </footer>
+
+  </main>
+
+  <script>
+    function filterContent() {
+      const input = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.getElementsByClassName('searchable-card');
+
+      for (let i = 0; i < cards.length; i++) {
+        const text = cards[i].innerText.toLowerCase();
+        if (text.includes(input)) {
+          cards[i].style.display = 'block';
+        } else {
+          cards[i].style.display = 'none';
+        }
+      }
+    }
+  </script>
+</body>
+</html>
